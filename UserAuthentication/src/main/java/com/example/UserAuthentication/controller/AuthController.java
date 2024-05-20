@@ -6,6 +6,7 @@ import com.example.UserAuthentication.dto.LoginResponse;
 import com.example.UserAuthentication.dto.SignupDTO;
 import com.example.UserAuthentication.model.User;
 import com.example.UserAuthentication.service.UserService;
+import com.example.UserAuthentication.utility.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -29,9 +30,12 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final JwtUtil jwtUtil;
+
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     private Cookie createCookie(String name, String value) {
@@ -56,7 +60,7 @@ public class AuthController {
         if (loginResponse.isSuccess()) {
             Cookie cookie = createCookie("jwt", loginResponse.getToken());
             response.addCookie(cookie);
-            return ResponseEntity.ok().body(new ApiResponse<>(true, "User registered successfully", null));
+            return ResponseEntity.ok().body(new ApiResponse<>(true, "User registered successfully", loginResponse.getToken()));
         }
         return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Registration failed", loginResponse.getMessage()));
     }
@@ -70,8 +74,23 @@ public class AuthController {
         LoginResponse loginResponse = userService.login(username, password);
         if (loginResponse.isSuccess()) {
             response.addCookie(createCookie("jwt", loginResponse.getToken()));
-            return ResponseEntity.ok(new ApiResponse<>(true, "Login successful", null));
+            return ResponseEntity.ok(new ApiResponse<>(true, "Login successful", loginResponse.getToken()));
         }
         return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Authentication failed", loginResponse.getMessage()));
+    }
+
+    @PostMapping("/validate-token")
+    public ResponseEntity<?> validateToken(@RequestBody String token) {
+        try {
+            // Assuming a service method that validates the token and returns boolean
+            boolean isValid = jwtUtil.validateToken(token) && !jwtUtil.isTokenExpired(token);
+            if (isValid) {
+                return ResponseEntity.ok().body(new ApiResponse<>(true, "Token is valid", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(false, "Token is invalid", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error validating token", null));
+        }
     }
 }

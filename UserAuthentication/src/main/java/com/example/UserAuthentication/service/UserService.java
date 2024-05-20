@@ -27,7 +27,7 @@ public class UserService {
     public LoginResponse registerNewUser(String username, String password, String email, String phoneNumber) {
         // Check if the username already exists
         if (userRepository.findByUsername(username).isPresent()) {
-            return new LoginResponse(false, null, "Username is already taken");
+            return new LoginResponse(false, null, "Username: " + username + " is already taken");
         }
 
         User user = new User();
@@ -51,7 +51,7 @@ public class UserService {
     public LoginResponse login(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
         if (!user.isPresent()) {
-            return new LoginResponse(false, null, "User not found");
+            return new LoginResponse(false, null, "User: " + username + " not found");
         }
         if (!passwordEncoder.matches(password, user.get().getPassword())) {
             return new LoginResponse(false, null, "Incorrect password");

@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +22,13 @@ public class JwtUtil {
 
     @Value("${jwt.expiration.hours}")
     private long expirationTimeHours;
-    private final long expirationTime = 3600000 * expirationTimeHours;  // 3600000 = 1 hour in milliseconds
+    private long expirationTime;  // 3600000 = 1 hour in milliseconds
 
+
+    @PostConstruct
+    public void init() {
+        expirationTime = 3600000 * expirationTimeHours;  // Initialize after properties are loaded
+    }
     /**
      * Generates a JWT for a specified username.
      *
