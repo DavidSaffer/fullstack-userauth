@@ -1,0 +1,36 @@
+/* HomePage.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+    font-family: 'Arial', sans-serif;
+}
+
+.title {
+    font-size: 2rem;
+    color: #5a5a5a;
+    margin-bottom: 20px;
+}
+
+.message {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.logoutButton {
+    font-size: 1rem;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logoutButton:hover {
+    background-color: #0056b3;
+}
