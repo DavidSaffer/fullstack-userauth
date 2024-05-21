@@ -17,7 +17,7 @@ const LoginForm = () => {
             const data = await loginUser(username, password);
             if (data.success) {
                 // Using js-cookie to manage cookies
-                Cookies.set('jwt', data.data, { expires: 1, secure: true, sameSite: 'Strict' });
+                //Cookies.set('test', data.data, { expires: 1, secure: true, sameSite: 'Strict', httpOnly: true});
                 router.push('/home');
             } else {
                 setError(data.message);

@@ -19,7 +19,7 @@ const SignupForm = () => {
             const data = await signupUser(username, password, email, phone);
             if (data.success) {
                 // Using js-cookie to manage cookies
-                Cookies.set('jwt', data.data, { expires: 1, secure: true, sameSite: 'Strict' });
+                //Cookies.set('jwt', data.data, { expires: 1, secure: true, sameSite: 'Strict' });
                 router.push('/home');
             } else {
                 setError(data.message);

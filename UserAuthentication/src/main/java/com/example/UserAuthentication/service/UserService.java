@@ -29,6 +29,16 @@ public class UserService {
         if (userRepository.findByUsername(username).isPresent()) {
             return new LoginResponse(false, null, "Username: " + username + " is already taken");
         }
+        //String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$";
+        String regex = "^.{4,}$";
+        if (!username.matches(regex)) {
+            return new LoginResponse(false, null, "Username too short. Must be at least 4 characters");
+        }
+
+        // Check if the password meets the strength requirements
+        if (!isPasswordStrong(password)) {
+            return new LoginResponse(false, null, "Password does not meet the security requirements. Must be at least 4 characters");
+        }
 
         User user = new User();
         user.setUsername(username);
@@ -58,6 +68,27 @@ public class UserService {
         }
         String token = jwtUtil.generateToken(user.get().getUsername());
         return new LoginResponse(true, token, "Login successful");
+    }
+
+    private boolean isPasswordStrong(String password) {
+        if (password == null) {
+            return false;
+        }
+        // Example requirements: minimum 8 characters, at least one uppercase, one lowercase, and one number
+        //String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$";
+        String regex = "^.{4,}$";
+        return password.matches(regex);
+    }
+
+    private boolean isValidUsername(String username) {
+        if (username == null) {
+            return false;
+        }
+        if (userRepository.findByUsername(username).isPresent()) {
+            return false;
+        }
+        String regex = "^.{4,}$";
+        return username.matches(regex);
     }
 
 }

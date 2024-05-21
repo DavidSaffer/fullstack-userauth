@@ -3,13 +3,18 @@
 import React from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { logoutUser } from '@/services/apiService';
 
 const HomePage: React.FC = () => {
     const router = useRouter();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         // Remove the JWT cookie
-        Cookies.remove('jwt');
+        try {
+          const data = await logoutUser();
+        } catch (error: any) {
+          console.error('Logout failed' + error.message);
+        }
         
         // Redirect to login page or refresh home page to show logged-out state
         router.push('/auth');

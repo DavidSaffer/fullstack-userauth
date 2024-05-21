@@ -79,10 +79,21 @@ public class AuthController {
         return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Authentication failed", loginResponse.getMessage()));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        // Create a cookie that overwrites the existing JWT cookie with an expired one
+        Cookie cookie = new Cookie("jwt", null); // null value for the cookie
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // should be true in production
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // expires immediately
+        response.addCookie(cookie);
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
     @PostMapping("/validate-token")
     public ResponseEntity<?> validateToken(@RequestBody String token) {
         try {
-            // Assuming a service method that validates the token and returns boolean
             boolean isValid = jwtUtil.validateToken(token) && !jwtUtil.isTokenExpired(token);
             if (isValid) {
                 return ResponseEntity.ok().body(new ApiResponse<>(true, "Token is valid", null));
