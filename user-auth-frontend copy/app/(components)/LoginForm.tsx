@@ -13,12 +13,11 @@ const LoginForm = () => {
     const router = useRouter();
 
     const handleLogin = async () => {
+        if (typeof window === 'undefined') return; // Guard against running on server
         try {
             const data = await loginUser(username, password);
             if (data.success) {
-                // Using js-cookie to manage cookies
-                //Cookies.set('test', data.data, { expires: 1, secure: true, sameSite: 'Strict', httpOnly: true});
-                router.push('/home');
+                router.push('/'); // Navigation should only happen client-side
             } else {
                 setError(data.message);
             }
