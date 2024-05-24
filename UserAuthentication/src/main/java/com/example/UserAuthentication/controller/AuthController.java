@@ -1,9 +1,6 @@
 package com.example.UserAuthentication.controller;
 
-import com.example.UserAuthentication.dto.ApiResponse;
-import com.example.UserAuthentication.dto.LoginDTO;
-import com.example.UserAuthentication.dto.LoginResponse;
-import com.example.UserAuthentication.dto.SignupDTO;
+import com.example.UserAuthentication.dto.*;
 import com.example.UserAuthentication.model.User;
 import com.example.UserAuthentication.service.UserService;
 import com.example.UserAuthentication.utility.JwtUtil;
@@ -103,5 +100,36 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error validating token", null));
         }
+    }
+
+    @GetMapping("/get-user-info")
+    public ResponseEntity<?> getUserInfo(@CookieValue("jwt") String token) {
+        try {
+            String username = jwtUtil.getUsernameFromToken(token);
+            if (username != null && jwtUtil.validateToken(token)) {
+                User user = userService.findByUsername(username);
+                if (user != null) {
+                    UserInfoDTO userInfo = new UserInfoDTO(
+                            user.getUsername(),
+                            user.getEmail(),
+                            user.getPhoneNumber(),
+                            user.getRole().toString()
+                    );
+                    return ResponseEntity.ok().body(new ApiResponse<>(true, "User information retrieved successfully", userInfo));
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, "User not found", null));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(false, "Invalid token", null));
+            }
+        } catch (Exception e) {
+            logger.error("Error retrieving user info", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error retrieving user information", null));
+        }
+    }
+
+    @PostMapping("/update-user")
+    public ResponseEntity<?> updateUser(@RequestBody UserInfoDTO userInfoDTO, HttpServletResponse response) {
+        
     }
 }

@@ -53,3 +53,18 @@ export const logoutUser = async () => {
         throw new Error('Failed to logout');
     }
 };
+
+export const getUserInfo = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/auth/get-user-info`, { withCredentials: true });
+        return { success: true, data: response.data };  // Return data on success
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            // Return a specific error message if available
+            return { success: false, error: error.response.data.message || 'Failed to get user info' };
+        }
+        // Return a general error message if the error structure is unexpected
+        return { success: false, error: 'Failed to get user info' };
+    }
+};
+

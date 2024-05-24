@@ -91,4 +91,7 @@ public class UserService {
         return username.matches(regex);
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
 }

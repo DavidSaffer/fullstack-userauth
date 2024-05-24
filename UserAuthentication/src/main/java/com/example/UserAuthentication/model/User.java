@@ -33,7 +33,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @ToString.Include
     @EqualsAndHashCode.Include
-    private UserRoles userRole = UserRoles.USER;
+    private UserRoles role = UserRoles.USER;
 
     @EqualsAndHashCode.Include
     @ToString.Include
