@@ -57,7 +57,7 @@ export const logoutUser = async () => {
 export const getUserInfo = async () => {
     try {
         const response = await axios.get(`${API_URL}/auth/get-user-info`, { withCredentials: true });
-        return { success: true, data: response.data };  // Return data on success
+        return { success: true, data: response.data }; 
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
             // Return a specific error message if available

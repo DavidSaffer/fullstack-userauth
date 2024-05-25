@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -47,4 +48,23 @@ public class User {
     private LocalDateTime dateUpdated;
 
     // getters and setters
+
+    // Custom setter for username to trim leading and trailing whitespace
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
+    }
+
+    // Overloaded setter for role that takes UserRole as parameter
+    public void setRole(UserRoles role) {
+        this.role = role;
+    }
+
+    // Overloaded setter for role that takes String as parameter
+    public void setRole(String role) throws IllegalArgumentException {
+        try {
+            this.role = UserRoles.valueOf(role.toUpperCase()); // Convert string to UserRole enum
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role: '" + role + "'. Please use one of the following values: " + Arrays.toString(UserRoles.values()));
+        }
+    }
 }

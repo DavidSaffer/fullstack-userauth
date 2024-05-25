@@ -13,6 +13,7 @@ public class UserInfoDTO {
         this.role = role;
     }
 
+
     // Getters
     public String getUsername() {
         return username;

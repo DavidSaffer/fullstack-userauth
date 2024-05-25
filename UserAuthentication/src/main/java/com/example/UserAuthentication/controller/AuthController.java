@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -129,7 +130,18 @@ public class AuthController {
     }
 
     @PostMapping("/update-user")
-    public ResponseEntity<?> updateUser(@RequestBody UserInfoDTO userInfoDTO, HttpServletResponse response) {
-        
+    public ResponseEntity<?> updateUser(@RequestBody EditUserDTO editUserDTO, HttpServletResponse response) {
+        try {
+            ApiResponse<?> result = userService.editUser(editUserDTO.getOldUsername(), editUserDTO.getNewUsername(), editUserDTO.getEmail(), editUserDTO.getPhoneNumber(), editUserDTO.getRole());
+            if (result.isSuccess()) {
+                return ResponseEntity.ok().body(new ApiResponse<>(true, "User updated successfully", null));
+            }
+            else {
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, result.getMessage(), result.getData()));
+            }
+        } catch (Exception e) {
+            logger.error("Error updating user", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error updating user", "Error updating user"));
+        }
     }
 }
