@@ -37,7 +37,6 @@ export const validateToken = async(token: string) => {
         }
         throw new Error('Failed to signup');
     }
-
 };
 
 export const logoutUser = async () => {
@@ -56,7 +55,7 @@ export const logoutUser = async () => {
 
 export const getUserInfo = async () => {
     try {
-        const response = await axios.get(`${API_URL}/auth/get-user-info`, { withCredentials: true });
+        const response = await axios.get(`${API_URL}/user/get-user-info`, { withCredentials: true });
         return { success: true, data: response.data }; 
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -65,6 +64,27 @@ export const getUserInfo = async () => {
         }
         // Return a general error message if the error structure is unexpected
         return { success: false, error: 'Failed to get user info' };
+    }
+};
+
+export const updateUserInfo = async (oldUsername: string, newUsername: string, email: string, phoneNumber: string, role: string) => {
+    try {
+        const response = await axios.post(`${API_URL}/user/update-user`, {
+            oldUsername,
+            newUsername,
+            email,
+            phoneNumber,
+            role
+        }, { withCredentials: true });
+
+        return { success: true, message: response.data };
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            // Return a specific error message if available
+            return { success: false, error: error.response.data.message +": " + error.response.data.data|| 'Failed to update user info' };
+        }
+        // Return a general error message if the error structure is unexpected
+        return { success: false, error: 'Failed to update user info' };
     }
 };
 
