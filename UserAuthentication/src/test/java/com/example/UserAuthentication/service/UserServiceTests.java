@@ -51,7 +51,7 @@ public class UserServiceTests {
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
         when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when(jwtUtil.generateToken(username)).thenReturn("jwtToken");
+        when(jwtUtil.generateToken(username, user.getRole().toString())).thenReturn("jwtToken");
 
         LoginResponse response = userService.registerNewUser(username, password, email, phoneNumber);
 
@@ -62,7 +62,7 @@ public class UserServiceTests {
         verify(userRepository, times(1)).findByUsername(username);
         verify(passwordEncoder, times(1)).encode(password);
         verify(userRepository, times(1)).save(any(User.class));
-        verify(jwtUtil, times(1)).generateToken(username);
+        verify(jwtUtil, times(1)).generateToken(username, user.getRole().toString());
     }
 
     // Add more tests for other scenarios

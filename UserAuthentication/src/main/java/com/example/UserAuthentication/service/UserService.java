@@ -61,7 +61,7 @@ public class UserService {
         }
 
         // Generate a token for the new user
-        String token = jwtUtil.generateToken(user.getUsername());
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole().toString());
         return new LoginResponse(true, token, "Registration successful");
     }
 
@@ -73,16 +73,23 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.get().getPassword())) {
             return new LoginResponse(false, null, "Incorrect password");
         }
-        String token = jwtUtil.generateToken(user.get().getUsername());
+        String token = jwtUtil.generateToken(user.get().getUsername(), user.get().getRole().toString());
         return new LoginResponse(true, token, "Login successful");
     }
 
-    public ApiResponse<?> editUser(String oldUsername, String newUsername, String email, String phoneNumber, String role) {
+    public ApiResponse<?> editUser(String oldUsername, String newUsername, String email, String phoneNumber, String role, String jwtUsername, String jwtRole) {
         //Find the user
         Optional<User> user = userRepository.findByUsername(oldUsername);
+
         if (!user.isPresent()) {
             return new ApiResponse<String>(false, "User not found", "User not found");
         }
+        User foundUser = user.get();
+        //Check if this JWT allows them to even update
+        if (!(foundUser.getUsername().equals(jwtUsername) || jwtRole == "ADMIN")) {
+            return new ApiResponse<String>(false, "Invalid Permissions", "JWT claims dont match requirements");
+        }
+
         //Update Username
         if(!oldUsername.equals(newUsername)) {
             //Check if username is available
@@ -92,7 +99,7 @@ public class UserService {
             }
             //Check if it meets requirements
             if (!newUsername.matches(usernameRegex)) {
-                return new ApiResponse<String>(false, "Username too short. Must be at least 4 characters", "Username too short. Must be at least 4 characters");
+                return new ApiResponse<String>(false, "Username too short. Must be at least 4 characters", newUsername);
             }
             user.get().setUsername(newUsername);
         }

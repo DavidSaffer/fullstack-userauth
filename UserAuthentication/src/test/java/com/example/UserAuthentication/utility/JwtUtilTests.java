@@ -32,7 +32,7 @@ public class JwtUtilTests {
     @Test
     public void testGenerateToken() {
         String username = "testUser";
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(username, "USER");
         assertNotNull(token, "Token should not be null");
 
         // Decode the token to verify if it contains the correct username in the subject claim
@@ -43,14 +43,14 @@ public class JwtUtilTests {
     @Test
     public void testGetUsernameFromToken() {
         String expectedUsername = "testUser";
-        String token = jwtUtil.generateToken(expectedUsername);
+        String token = jwtUtil.generateToken(expectedUsername, "USER");
         String username = jwtUtil.getUsernameFromToken(token);
         assertEquals(expectedUsername, username, "Extracted username should match the expected username");
     }
 
     @Test
     public void testIsTokenExpired() {
-        String token = jwtUtil.generateToken("testUser");
+        String token = jwtUtil.generateToken("testUser", "USER");
 
         // Immediately check if the token is expired
         assertFalse(jwtUtil.isTokenExpired(token), "Token should not be expired right after creation");
@@ -66,7 +66,7 @@ public class JwtUtilTests {
     @Test
     public void testValidateToken() {
         String username = "validUser";
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(username, "USER");
 
         // Validate token
         assertTrue(jwtUtil.validateToken(token), "Token should be valid");

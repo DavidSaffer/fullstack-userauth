@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Utility class for handling JWT (JSON Web Token) operations, including creation, validation, and extraction of claims.
@@ -33,13 +35,15 @@ public class JwtUtil {
      * Generates a JWT for a specified username.
      *
      * @param username the username for which the token is being created
+     * @param role the role for the user which the token is being created
      * @return the generated JWT string or null if an error occurs during token creation
      */
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
             String token = JWT.create()
                     .withSubject(username)
+                    .withClaim("role", role)
                     .withIssuer("auth0")
                     .withIssuedAt(new Date())
                     .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
@@ -63,6 +67,10 @@ public class JwtUtil {
         return username;
     }
 
+    public String getRoleFromToken(String token) {
+        return JWT.decode(token).getClaim("role").asString();
+    }
+
     /**
      * Checks if a JWT has expired (DOES NOT VALIDATE).
      *
@@ -74,6 +82,7 @@ public class JwtUtil {
         Date expiration = JWT.decode(token).getExpiresAt();
         return expiration.before(new Date());
     }
+
 
     /**
      * Validates a JWT's integrity and checks the validity of its claims.
