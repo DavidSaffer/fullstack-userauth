@@ -2,6 +2,7 @@ package com.example.UserAuthentication.service;
 
 import com.example.UserAuthentication.dto.ApiResponse;
 import com.example.UserAuthentication.dto.LoginResponse;
+import com.example.UserAuthentication.dto.UserDTO;
 import com.example.UserAuthentication.enums.UserRoles;
 import com.example.UserAuthentication.model.User;
 import com.example.UserAuthentication.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -124,7 +126,8 @@ public class UserService {
         } catch (Exception e) {
             return new ApiResponse<String>(false, "Failed to save user", "Failed to save user");
         }
-        return new ApiResponse<User>(true, "Success", user.get());
+        String token = jwtUtil.generateToken(user.get().getUsername(), user.get().getRole().toString());
+        return new ApiResponse<String>(true, "Success", token);
     }
 
     private boolean isPasswordStrong(String password) {
@@ -135,6 +138,14 @@ public class UserService {
         //String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$";
         String regex = "^.{4,}$";
         return password.matches(regex);
+    }
+
+    public ApiResponse<?> getAllUsers(String role) {
+        if (!role.equals("ADMIN")) {
+            return new ApiResponse<>(false, "Invalid role: "+role, role);
+        }
+        List<UserDTO> users = userRepository.findAllUsersWithTruncatedPasswords();
+        return new ApiResponse<>(true, "Success", users);
     }
 
 

@@ -1,49 +1,93 @@
-/* HomePage.module.css */
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-
     font-family: 'Arial', sans-serif;
+    background-color: #363636; 
 }
 
 .title {
-    font-size: 2rem;
-    color: #5a5a5a;
-    margin-bottom: 20px;
+    font-size: 2.5rem;
+    color: #5a5a5a; /* Original grey color for the title */
+    margin-bottom: 32px;
 }
 
 .userDetails {
+    width: 80%;
+    max-width: 500px;
+    background-color: #ffffff2a; /* Semi-transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-top: 20px;
-    background-color: #ffffff2a;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
+.input, .select, .button {
+    padding: 12px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    margin-bottom: 10px;
+}
 
+.select {
+    color: black;
+}
 
+.button {
+    background-color: #4CAF50; /* Green background for buttons */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+}
+
+.button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
 
 .logoutButton {
     font-size: 1rem;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #007bff; /* Blue color for logout button */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .logoutButton:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Darker blue on hover */
 }
 
 .error {
-    color: #ff0000;
+    color: #ff0000; /* Red color for error messages */
     text-align: center;
     margin-top: 20px;
+    font-weight: bold;
+}
+
+.successMessage {
+    color: #28a745; /* Success color, similar to Bootstrap's success green */
+    opacity: 1;
+    transition: opacity 3s ease-out;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.fadeOut {
+    opacity: 1;
+    transition: opacity 3s ease-in-out;
 }

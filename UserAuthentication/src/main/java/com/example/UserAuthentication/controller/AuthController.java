@@ -103,7 +103,19 @@ public class AuthController {
         }
     }
 
-
-
+    @PostMapping("/is-admin")
+    public ResponseEntity<?> validateAdmim(@RequestBody String token) {
+        try {
+            String role = jwtUtil.getRoleFromToken(token);
+            boolean isAdmin = "ADMIN".equals(role);
+            if (isAdmin) {
+                return ResponseEntity.ok(new ApiResponse<>(true, "User is Admin", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse<>(false, "Access denied. User is not an admin.", role));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error validating user role: " + e.getMessage(), token));
+        }
+    }
 
 }

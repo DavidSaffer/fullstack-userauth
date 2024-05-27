@@ -4,8 +4,10 @@ import com.example.UserAuthentication.enums.UserRoles;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -46,6 +48,13 @@ public class User {
 
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
+
+    // Method to automatically update the updatedAt timestamp before any update operation
+    @PreUpdate
+    protected void onUpdate() {
+        dateUpdated = new Timestamp(new Date().getTime()).toLocalDateTime();
+    }
+
 
     // getters and setters
 

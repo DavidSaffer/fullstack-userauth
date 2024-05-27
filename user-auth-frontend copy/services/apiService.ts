@@ -39,6 +39,30 @@ export const validateToken = async(token: string) => {
     }
 };
 
+export const checkIsAdmin = async(token: string) => {
+    try {
+        const response = await axios.post(`${API_URL}/auth/is-admin`, token, {withCredentials: true});
+        return {success: true, data: response.data};
+    } catch (error: any) {
+        if (axios.isAxiosError(error) && error.response) {
+            return {success: false, data: error.response.data || 'Failed to check if user is admin1'};
+        }
+        return {success: false, data: 'Failed to check if user is admin2'};
+    }
+};
+
+export const checkIsAdminGet = async() => {
+    try {
+        const response = await axios.get(`${API_URL}/auth/is-admin`, { withCredentials: true });
+        return {success: true, data: response.data};
+    } catch (error: any) {
+        if (axios.isAxiosError(error) && error.response) {
+            return {success: false, data: error.response.data || 'Failed to check if user is admin1'};
+        }
+        return {success: false, data: 'Failed to check if user is admin2'};
+    }
+};
+
 export const logoutUser = async () => {
     try {
         const response = await axios.post(`${API_URL}/auth/logout`, {}, {
@@ -87,4 +111,18 @@ export const updateUserInfo = async (oldUsername: string, newUsername: string, e
         return { success: false, error: 'Failed to update user info' };
     }
 };
+
+export const getAllUsers = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/user/users`, { withCredentials: true});
+        return {success: true, data: response.data};
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            // Return a specific error message if available
+            return { success: false, error: error|| 'Failed to get users' };
+        }
+        // Return a general error message if the error structure is unexpected
+        return { success: false, error: 'Request failed' };
+    }
+}
 
