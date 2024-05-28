@@ -34,3 +34,15 @@
 .button:hover {
     background-color: #0056b3;
 }
+
+.input {
+    color: black;
+}
+
+.success {
+    color: green;
+}
+
+.error {
+    color: red;
+}

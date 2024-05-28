@@ -57,7 +57,7 @@ const HomePage = () => {
     const handleUpdateUserInfo = async () => {
       const result = await updateUserInfo(userInfo.username, editedUsername, editedEmail, editedPhoneNumber, editedRole);
       if (result.success) {
-          console.log(result.message);
+          console.log(result.data);
           setUserInfo({ ...userInfo, username: editedUsername, email: editedEmail, phoneNumber: editedPhoneNumber, role: editedRole });
           setEditMode(false);
           setSuccessMessage('Profile updated successfully!');

@@ -88,7 +88,9 @@ public class UserService {
         }
         User foundUser = user.get();
         //Check if this JWT allows them to even update
-        if (!(foundUser.getUsername().equals(jwtUsername) || jwtRole == "ADMIN")) {
+        // Allowed to update if - it's your user, or if you are an admin
+        boolean allowedToUpdate = foundUser.getUsername().equals(jwtUsername) || jwtRole.equals("ADMIN");
+        if (!allowedToUpdate) {
             return new ApiResponse<String>(false, "Invalid Permissions", "JWT claims dont match requirements");
         }
 

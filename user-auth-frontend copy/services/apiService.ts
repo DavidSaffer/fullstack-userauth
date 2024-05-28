@@ -101,7 +101,7 @@ export const updateUserInfo = async (oldUsername: string, newUsername: string, e
             role
         }, { withCredentials: true });
 
-        return { success: true, message: response.data };
+        return { success: true, data: response.data };
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
             // Return a specific error message if available
