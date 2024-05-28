@@ -5,6 +5,7 @@ import com.example.UserAuthentication.model.User;
 import com.example.UserAuthentication.service.UserService;
 import com.example.UserAuthentication.utility.JwtUtil;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,6 +116,36 @@ public class AuthController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error validating user role: " + e.getMessage(), token));
+        }
+    }
+
+    @DeleteMapping("/user/{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String username, HttpServletRequest request) {
+        try {
+            Cookie[] cookies = request.getCookies();
+            String jwtToken = null;
+
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("jwt".equals(cookie.getName())) {
+                        jwtToken = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+            if (jwtToken == null) {
+                return ResponseEntity.status(403).body(new ApiResponse<>(false, "Access denied: No JWT token found.", null));
+            }
+            String jwtUsername = jwtUtil.getUsernameFromToken(jwtToken);
+            String jwtRole = jwtUtil.getRoleFromToken(jwtToken);
+            ApiResponse<?> result = userService.deleteUser(username, jwtUsername, jwtRole);
+            if (result.isSuccess()) {
+                return ResponseEntity.ok().body(new ApiResponse<>(true, "User deleted successfully", null));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, result.getMessage(), result.getData()));
+
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error deleting user", e.getMessage()));
         }
     }
 

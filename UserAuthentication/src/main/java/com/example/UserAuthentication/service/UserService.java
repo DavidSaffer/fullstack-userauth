@@ -69,7 +69,7 @@ public class UserService {
 
     public LoginResponse login(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             return new LoginResponse(false, null, "User: " + username + " not found");
         }
         if (!passwordEncoder.matches(password, user.get().getPassword())) {
@@ -83,7 +83,7 @@ public class UserService {
         //Find the user
         Optional<User> user = userRepository.findByUsername(oldUsername);
 
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             return new ApiResponse<String>(false, "User not found", "User not found");
         }
         User foundUser = user.get();
@@ -176,5 +176,22 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
+    }
+
+    public ApiResponse<?> deleteUser(String username, String jwtUsername, String jwtRole) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            return new ApiResponse<>(false, "User "+ username +" not found", "User "+ username +" not found");
+        }
+        boolean allowedToUpdate = user.get().getUsername().equals(jwtUsername) || jwtRole.equals("ADMIN");
+        if (!allowedToUpdate){
+            return new ApiResponse<>(false, "Invalid Permissions in JWT token", "Invalid Permissions in JWT token");
+        }
+        try {
+            userRepository.delete(user.get());
+            return new ApiResponse<>(true, "Success", "Success");
+        } catch (Exception e) {
+            return new ApiResponse<>(false, "Failed to delete user", "Failed to delete user");
+        }
     }
 }
