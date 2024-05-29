@@ -11,6 +11,31 @@ This project is a full-stack application consisting of a Spring Boot backend and
 ## Architecture Diagram
 ![Architecture Diagram](/docs/architecture.png)
 
+## Database Table Structure
+
+### `users` Table
+
+The `users` table stores information about the users registered in the system. Here is the structure of the `users` table:
+
+| Column Name  | Data Type           | Description                                           |
+|--------------|---------------------|-------------------------------------------------------|
+| user_id      | BIGINT              | Primary key, auto-incremented                         |
+| username     | VARCHAR(255)        | Unique username for the user                          |
+| password     | VARCHAR(255)        | Hashed password                                       |
+| email        | VARCHAR(255)        | Email address of the user                             |
+| phone_number | VARCHAR(20)         | Phone number of the user                              |
+| role         | ENUM('ADMIN', 'USER')| Role of the user (either 'ADMIN' or 'USER')           |
+| date_created | TIMESTAMP           | Timestamp of when the user was created                |
+| date_updated | TIMESTAMP           | Timestamp of when the user details were last updated  |
+
+#### Example Data
+
+| date_created           | date_updated           | user_id | email            | password                                                   | phone_number | username | role  |
+|------------------------|------------------------|---------|------------------|------------------------------------------------------------|--------------|----------|-------|
+| 2024-05-24 18:45:20.843| 2024-05-29 18:40:31.617| 1       | example@gmail.com| $2a$10$5DS1NLLJk2QFOEuQ5| 123-214-5122 | John     | ADMIN |
+| 2024-05-05 11:39:06.000| 2024-04-23 14:32:26.000| 2       | user2@example.com| y1S8FhxUtXuZ04UvkNTVAQ==| 123-456-7890 | user2    | ADMIN |
+
+
 ## Features
 
 - **User Authentication**: Secure user authentication using JWT tokens.
