@@ -22,3 +22,12 @@ This project is a full-stack application consisting of a Spring Boot backend and
 
 ### Follow the [Installation Guide](/docs/INSTALLATION.md)
 
+## Screenshots
+### Auth Page
+![Auth Page](docs/screenshots/auth.png)
+
+### Home Page
+![Home Page](docs/screenshots/home.png)
+
+### Admin Portal
+![Admin Portal](docs/screenshots/adminPortal.png)

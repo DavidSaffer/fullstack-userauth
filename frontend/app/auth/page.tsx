@@ -14,11 +14,14 @@ import styles from './page.module.css';
 
 const AuthPage: React.FC = () => {
   return (
+    <>
+    <h1>Authentication</h1>
     <div className={styles.container}>
-      <h1>Authentication</h1>
+      
       <LoginForm />
       <SignupForm />
     </div>
+    </>
   );
 };
 
