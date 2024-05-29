@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './admin.module.css'; // Assume you have a CSS module for styling
-import { getAllUsers, updateUserInfo } from '../../services/apiService';
+import { getAllUsers, updateUserInfo, deleteUser } from '../../services/apiService';
 
 const AdminPortal = () => {
     const [users, setUsers] = useState<any[]>([]);
@@ -13,8 +14,9 @@ const AdminPortal = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
+    const router = useRouter();
 
+    useEffect(() => {
         const fetchUsers = async () => {
             setLoading(true);
             const response = await getAllUsers();
@@ -40,7 +42,12 @@ const AdminPortal = () => {
         fetchUsers();
     }, []);
 
+    const handleGoHome = () => {
+        router.push('/');
+    }
+
     const handleEditToggle = (userId: any) => {
+        console.log(userId);
         const updatedUsers = users.map(user => {
             if (user.userId === userId) {
                 return { ...user, isEditing: !user.isEditing };
@@ -109,6 +116,23 @@ const AdminPortal = () => {
         handleEditToggle(userId);  // Turn off editing mode after save
     };
 
+    const handleDelete = async (username: any) => {
+        const user = users.find(user => user.username === username);
+        const response = await deleteUser(username);
+        console.log(response);
+        if (response.success) {
+            setUsers(prevUsers => prevUsers.filter(user => user.username !== username)); // Assuming `username` is unique
+            setSuccessMessage('User deleted successfully!');
+            setTimeout(() => setSuccessMessage(''), 3000);
+            if (response.data.data === true) {
+                router.push('/auth');
+            }
+        } else {
+            setErrorMessage(response.error?.toString() || 'Failed to delete user');
+            setTimeout(() => setErrorMessage(''), 5000);
+        }
+    };
+
     const handleChange = (userId: any, field: any, value: any) => {
         const updatedUsers = users.map(user => {
             if (user.userId === userId) {
@@ -122,6 +146,7 @@ const AdminPortal = () => {
     return (
         <div className={styles.container}>
             <h1>Admin Portal</h1>
+            <button onClick={handleGoHome} className={styles.button}>Go Home</button>
             {loading ? (
                 <p>Loading users...</p>
             ) : (
@@ -135,7 +160,7 @@ const AdminPortal = () => {
                             <th>Username</th>
                             <th>Email</th>
                             <th>Role</th>
-                            <th>Password (Partial)</th>
+                            <th>Password (Partial Hash)</th>
                             <th>Phone Number</th>
                             <th>Date Created</th>
                             <th>Date Updated</th>
@@ -159,7 +184,7 @@ const AdminPortal = () => {
                                         value={user.editableEmail}
                                         onChange={(e) => handleChange(user.userId, 'editableEmail', e.target.value)}
                                     />
-                                ) : user.email}</td>
+                                ) :  (user.email || 'N/A')}</td>
                                 <td>{user.isEditing ? (
                                     <select
                                         value={user.editableRole}
@@ -188,7 +213,10 @@ const AdminPortal = () => {
                                             <button onClick={() => handleCancel(user.userId)} className={styles.button}>Cancel</button>
                                         </>
                                     ) : (
+                                        <>
                                         <button onClick={() => handleEditToggle(user.userId)} className={styles.button}>Edit</button>
+                                        <button onClick={() => handleDelete(user.username)} className={styles.button}>Delete</button>
+                                        </>
                                     )}
                                 </td>
                             </tr>

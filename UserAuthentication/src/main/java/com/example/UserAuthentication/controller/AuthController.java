@@ -46,6 +46,15 @@ public class AuthController {
         return cookie;
     }
 
+    private Cookie createEmptyCookie() {
+        Cookie cookie = new Cookie("jwt", null); // null value for the cookie
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // should be true in production
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // expires immediately
+        return cookie;
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupDTO signupDTO, HttpServletResponse response) {
         logger.info("Signup attempt for username: {}", signupDTO.getUsername());
@@ -119,8 +128,10 @@ public class AuthController {
         }
     }
 
+
     @DeleteMapping("/user/{username}")
-    public ResponseEntity<?> deleteUser(@PathVariable String username, HttpServletRequest request) {
+    public ResponseEntity<?> deleteUser(@PathVariable String username, HttpServletRequest request, HttpServletResponse response) {
+        // 1 - Get the jwt Cookie
         try {
             Cookie[] cookies = request.getCookies();
             String jwtToken = null;
@@ -136,11 +147,21 @@ public class AuthController {
             if (jwtToken == null) {
                 return ResponseEntity.status(403).body(new ApiResponse<>(false, "Access denied: No JWT token found.", null));
             }
+            // 2 - Extract the username and role from the cookie
+            // (this shows us who is making this request)
+            // (used to verify if the person is allowed to delete or not)
             String jwtUsername = jwtUtil.getUsernameFromToken(jwtToken);
             String jwtRole = jwtUtil.getRoleFromToken(jwtToken);
+            // 3 - Pass this information to user service, and handle the result
             ApiResponse<?> result = userService.deleteUser(username, jwtUsername, jwtRole);
+            // 4 - If deleting self, remove the cookie (override it)
             if (result.isSuccess()) {
-                return ResponseEntity.ok().body(new ApiResponse<>(true, "User deleted successfully", null));
+                if (result.getData().equals(true)){
+                    Cookie emptyCookie = createEmptyCookie();
+                    response.addCookie(emptyCookie);
+                    return ResponseEntity.ok().body(new ApiResponse<>(true, "User deleted successfully", true)); // True for we deleted ourselves
+                }
+                return ResponseEntity.ok().body(new ApiResponse<>(true, "User deleted successfully", false)); // False for we deleted someone else
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, result.getMessage(), result.getData()));
 

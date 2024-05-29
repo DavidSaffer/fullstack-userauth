@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { logoutUser, getUserInfo, updateUserInfo } from '@/services/apiService';
+import { logoutUser, getUserInfo, updateUserInfo, deleteUser } from '@/services/apiService';
 import styles from './page.module.css';
 
 const HomePage = () => {
@@ -71,6 +71,18 @@ const HomePage = () => {
       }
     };
 
+    const handleDeleteAccount = async () => {
+      if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+          const response = await deleteUser(userInfo.username);
+          if (response.success) {
+              alert('Account deleted successfully.');
+              router.push('/auth');
+          } else {
+              setError(response.error?.toString() || 'Failed to delete account');
+          }
+      }
+  };
+
     const handleAdminPortal = () => {
       router.push('/admin');
     };
@@ -108,6 +120,7 @@ const HomePage = () => {
               </label>
               <button onClick={handleUpdateUserInfo} disabled={!hasChanges()} className={styles.button}>Save</button>
               <button onClick={() => setEditMode(false)} className={styles.button}>Cancel Edit</button>
+              
             </>
           ) : (
             <>
@@ -119,6 +132,7 @@ const HomePage = () => {
               {userInfo.role === 'ADMIN' && (
                     <button onClick={handleAdminPortal} className={styles.button}>Admin Portal</button>
                 )}
+                <button onClick={handleDeleteAccount} className={styles.deleteButton}>Delete Account</button>
             </>
           )}
         </div>

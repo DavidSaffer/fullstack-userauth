@@ -1,7 +1,8 @@
 ## ToDo
 #### Add functionality to Home Page
-- let user delete their account
-- Protect API endpoints by requiring a valid JWT
+- Only allow 'save' to be clicked if a field has changed
+- Admin can change themselves to a user in the admin portal - It dosnt redirect to show that the edit endpoint is protected. After the change the user cant modify any other users
+- Add filtering/searching to the table
 
 - testing
 - tailwind?

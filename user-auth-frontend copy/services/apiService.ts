@@ -124,5 +124,24 @@ export const getAllUsers = async () => {
         // Return a general error message if the error structure is unexpected
         return { success: false, error: 'Request failed' };
     }
-}
+};
+
+/**
+ * Deletes a user with the specified username.
+ * @param {string} username - The username of the user to delete.
+ * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+ */
+export const deleteUser = async (username: string) => {
+    try {
+        const response = await axios.delete(`${API_URL}/auth/user/${username}`, { withCredentials: true });
+        return { success: true, data: response.data };
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            // Return a specific error message if available
+            return { success: false, error: error.response || 'Failed to delete user' };
+        }
+        // Return a general error message if the error structure is unexpected
+        return { success: false, error: 'Request failed' };
+    }
+};
 

@@ -187,9 +187,13 @@ public class UserService {
         if (!allowedToUpdate){
             return new ApiResponse<>(false, "Invalid Permissions in JWT token", "Invalid Permissions in JWT token");
         }
+        boolean isDeletingSelf = user.get().getUsername().equals(jwtUsername);
         try {
             userRepository.delete(user.get());
-            return new ApiResponse<>(true, "Success", "Success");
+            if (isDeletingSelf) {
+                return new ApiResponse<>(true, "Success", true);
+            }
+            return new ApiResponse<>(true, "Success", false);
         } catch (Exception e) {
             return new ApiResponse<>(false, "Failed to delete user", "Failed to delete user");
         }
