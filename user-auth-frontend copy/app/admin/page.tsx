@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import styles from './admin.module.css'; // Assume you have a CSS module for styling
 import { getAllUsers, updateUserInfo, deleteUser } from '../../services/apiService';
 
+
 const AdminPortal = () => {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -59,8 +60,16 @@ const AdminPortal = () => {
         router.push('/');
     }
 
+    const hasChanges = (userId: any) => {
+        const user = users.find(user => user.userId === userId);
+        const hasChanges = user.editableUsername !== user.username ||
+        user.editableEmail !== user.email ||
+        user.editableRole !== user.role ||
+        user.editablePhoneNumber !== user.phoneNumber;
+        return hasChanges;
+    };
+
     const handleEditToggle = (userId: any) => {
-        console.log(userId);
         const updatedUsers = users.map(user => {
             if (user.userId === userId) {
                 return { ...user, isEditing: !user.isEditing };
@@ -102,13 +111,10 @@ const AdminPortal = () => {
                 editableRole
             );
             if (response.success) {
-                console.log('User updated successfully:', response.data);
                 user.username = editableUsername;
                 user.email = editableEmail;
                 user.phoneNumber = editablePhoneNumber;
                 user.role = editableRole;
-                // user.isEditing = false;
-                console.log(users);
                 setSuccessMessage('User updated successfully!');
                 setErrorMessage(''); // Clear any previous error messages
                 setTimeout(() => setSuccessMessage(''), 3000);
@@ -125,24 +131,22 @@ const AdminPortal = () => {
             }
         }
         // Placeholder for save logic
-        console.log('Save user:', userId);
         handleEditToggle(userId);  // Turn off editing mode after save
     };
 
-    const handleDelete = async (username: any) => {
-        const user = users.find(user => user.username === username);
-        const response = await deleteUser(username);
-        console.log(response);
-        if (response.success) {
-            setUsers(prevUsers => prevUsers.filter(user => user.username !== username)); // Assuming `username` is unique
-            setSuccessMessage('User deleted successfully!');
-            setTimeout(() => setSuccessMessage(''), 3000);
-            if (response.data.data === true) {
-                router.push('/auth');
+    const handleDelete = async (username: string) => {
+        // Confirm before deleting
+        if (window.confirm(`Are you sure you want to delete the user: ${username}?`)) {
+            const user = users.find(user => user.username === username);
+            const response = await deleteUser(username);
+            if (response.success) {
+                setUsers(prevUsers => prevUsers.filter(user => user.username !== username)); // Assuming `username` is unique
+                setSuccessMessage('User deleted successfully!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+            } else {
+                setErrorMessage(response.error?.toString() || 'Failed to delete user');
+                setTimeout(() => setErrorMessage(''), 5000);
             }
-        } else {
-            setErrorMessage(response.error?.toString() || 'Failed to delete user');
-            setTimeout(() => setErrorMessage(''), 5000);
         }
     };
 
@@ -205,14 +209,14 @@ const AdminPortal = () => {
                                 <td>{user.isEditing ? (
                                     <input
                                         type="text"
-                                        value={user.editableUsername}
+                                        value={user.editableUsername || ''}
                                         onChange={(e) => handleChange(user.userId, 'editableUsername', e.target.value)}
                                     />
                                 ) : user.username}</td>
                                 <td>{user.isEditing ? (
                                     <input
                                         type="email"
-                                        value={user.editableEmail}
+                                        value={user.editableEmail || ''}
                                         onChange={(e) => handleChange(user.userId, 'editableEmail', e.target.value)}
                                     />
                                 ) :  (user.email || 'N/A')}</td>
@@ -231,7 +235,7 @@ const AdminPortal = () => {
                                 <td>{user.isEditing ? (
                                     <input
                                         type="tel"
-                                        value={user.editablePhoneNumber}
+                                        value={user.editablePhoneNumber || ''}
                                         onChange={(e) => handleChange(user.userId, 'editablePhoneNumber', e.target.value)}
                                     />
                                 ) : (user.phoneNumber || 'N/A')}</td>
@@ -240,7 +244,7 @@ const AdminPortal = () => {
                                 <td>
                                     {user.isEditing ? (
                                         <>
-                                            <button onClick={() => handleSave(user.userId)} className={styles.button}>Save</button>
+                                            <button onClick={() => handleSave(user.userId)} disabled={!hasChanges(user.userId)} className={styles.button} >Save</button>
                                             <button onClick={() => handleCancel(user.userId)} className={styles.button}>Cancel</button>
                                         </>
                                     ) : (

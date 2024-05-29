@@ -20,7 +20,6 @@ const HomePage = () => {
     useEffect(() => {
       const fetchUserInfo = async () => {
           const result = await getUserInfo();
-          console.log(result);
           if (result.success) {
               setUserInfo(result.data.data);
               updateEditFields(result.data.data);
@@ -57,7 +56,6 @@ const HomePage = () => {
     const handleUpdateUserInfo = async () => {
       const result = await updateUserInfo(userInfo.username, editedUsername, editedEmail, editedPhoneNumber, editedRole);
       if (result.success) {
-          console.log(result.data);
           setUserInfo({ ...userInfo, username: editedUsername, email: editedEmail, phoneNumber: editedPhoneNumber, role: editedRole });
           setEditMode(false);
           setSuccessMessage('Profile updated successfully!');
@@ -103,13 +101,13 @@ const HomePage = () => {
           {editMode ? (
             <>
               <label className={styles.label}>Username:
-                <input value={editedUsername} onChange={(e) => setEditedUsername(e.target.value)} className={styles.input} />
+                <input value={editedUsername || ''} onChange={(e) => setEditedUsername(e.target.value)} className={styles.input} />
               </label>
               <label className={styles.label}>Email:
-                <input type="email" value={editedEmail} onChange={(e) => setEditedEmail(e.target.value)} className={styles.input} />
+                <input type="email" value={editedEmail || ''} onChange={(e) => setEditedEmail(e.target.value)} className={styles.input} />
               </label>
               <label className={styles.label}>Phone:
-                <input type="tel" value={editedPhoneNumber} onChange={(e) => setEditedPhoneNumber(e.target.value)} className={styles.input} />
+                <input type="tel" value={editedPhoneNumber || ''} onChange={(e) => setEditedPhoneNumber(e.target.value)} className={styles.input} />
               </label>
               <label className={styles.label}>Role:
                 <select value={editedRole} onChange={(e) => setEditedRole(e.target.value)} className={styles.select}>

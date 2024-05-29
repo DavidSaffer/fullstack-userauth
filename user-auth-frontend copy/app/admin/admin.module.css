@@ -35,6 +35,12 @@
     background-color: #0056b3;
 }
 
+.button:disabled {
+    background-color: #003a77;
+    color: #666;
+    cursor: not-allowed;
+}
+
 .input {
     color: black;
 }
