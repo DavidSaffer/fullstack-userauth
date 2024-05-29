@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import styles from './admin.module.css'; // Assume you have a CSS module for styling
 import { getAllUsers, updateUserInfo, deleteUser } from '../../services/apiService';
 
-
 const AdminPortal = () => {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
