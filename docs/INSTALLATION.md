@@ -15,7 +15,7 @@ cd fullstack-userauth
 
 Navigate to the backend directory and follow the installation guide provided there to set up and run the Spring Boot backend:
 
-[Backend Installation Guide](/../backend/docs/INSTALLATION.md)
+[Backend Installation Guide](../backend/docs/INSTALLATION.md)
 
 ## Step 3: Set Up the Frontend
 
