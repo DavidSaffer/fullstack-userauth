@@ -19,13 +19,9 @@ Before you begin, ensure you have the following software installed on your machi
     - [Download MySQL](https://dev.mysql.com/downloads/mysql/)
 
 
-## Step 1: Clone the Repository
-
-First, clone the project repository from GitHub to your local machine:
-
+## Step 1: Navigate to the Backend Directory
 ```bash
-git clone https://github.com/DavidSaffer/fullstack-userauth.git
-cd backend
+cd fullstack-userauth/backend
 ```
 
 ## Step 2: Configure the Database
