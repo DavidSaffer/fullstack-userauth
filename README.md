@@ -1,7 +1,7 @@
 # Full Stack User Authentication System
 
 ## Overview
-This project is a full-stack application consisting of a Spring Boot backend and a Next.js frontend. The backend provides RESTful APIs for user authentication and authorization, while the frontend offers a user-friendly interface for interacting with these services.
+This project is a full-stack application consisting of a Spring Boot backend and a Next.js frontend. The backend provides REST APIs for user authentication and authorization, while the frontend offers a user-friendly interface for interacting with these services.
 
 ## Project Structure
 - `backend/`: Contains the Spring Boot application.
@@ -10,6 +10,34 @@ This project is a full-stack application consisting of a Spring Boot backend and
   
 ## Architecture Diagram
 ![Architecture Diagram](/docs/architecture.png)
+
+## Features
+
+- **User Authentication**: Secure user authentication using JWT tokens.
+- **Role-based Authorization**: Different access levels for admin and regular users.
+- **User Management**: Admin portal for managing users and roles.
+- **Responsive Design**: UI built with Next.js.
+- **RESTful APIs**: Well-documented APIs for user management and authentication.
+- **Secure Password Storage**: Passwords are hashed and stored securely using BCrypt.
+
+## API Documenation
+[API Documenation](/backend/docs/API.md)
+
+## Tech Stack
+
+**Frontend**:
+- Next.js (React)
+- Axios (for API requests)
+
+**Backend**:
+- Spring Boot (Java)
+- Spring Security (for authentication and authorization)
+- MySQL (Database)
+- JPA/Hibernate (for ORM)
+
+**Other**:
+- JWT (for secure token-based authentication)
+- Maven (for dependency management)
 
 ## Authentication Mechanism
 
