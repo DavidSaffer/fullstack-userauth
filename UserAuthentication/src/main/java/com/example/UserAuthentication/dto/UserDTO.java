@@ -9,6 +9,22 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data Transfer Object representing the user data.
+ * This class is used to transfer user data between processes, encapsulating details such as
+ * user credentials, roles, and timestamps for creation and updates.
+ *
+ * Fields:
+ * - {@code userId}: The unique identifier for the user.
+ * - {@code username}: The username of the user. It cannot be blank and is validated accordingly.
+ * - {@code password}: The user's password. This field is not subject to a not blank constraint here but should be securely handled.
+ * - {@code role}: The role of the user, defined by an enum {@link UserRoles}.
+ * - {@code email}: The email address of the user.
+ * - {@code phoneNumber}: An optional phone number for the user.
+ * - {@code dateCreated}: The timestamp when the user account was created.
+ * - {@code dateUpdated}: The timestamp when the user account was last updated.
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor

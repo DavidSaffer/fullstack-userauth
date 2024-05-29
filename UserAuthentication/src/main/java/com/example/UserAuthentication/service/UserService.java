@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing user operations.
+ * This includes registration, authentication, user updates, and more, integrating with the UserRepository for data persistence.
+ */
 @Service
 public class UserService {
 
@@ -24,12 +28,23 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final String usernameRegex = "^.{4,}$";
 
+    @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Registers a new user with the provided credentials.
+     * Checks for username uniqueness, password strength, and persists the new user to the database.
+     *
+     * @param username the desired username.
+     * @param password the desired password.
+     * @param email the user's email.
+     * @param phoneNumber the user's phone number.
+     * @return LoginResponse indicating the result of the registration attempt.
+     */
     public LoginResponse registerNewUser(String username, String password, String email, String phoneNumber) {
         // Check if the username already exists
         if (userRepository.findByUsername(username).isPresent()) {
@@ -67,6 +82,13 @@ public class UserService {
         return new LoginResponse(true, token, "Registration successful");
     }
 
+    /**
+     * Authenticates a user with the provided username and password.
+     *
+     * @param username the username of the user attempting to log in.
+     * @param password the password provided for login.
+     * @return LoginResponse indicating the result of the login attempt.
+     */
     public LoginResponse login(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
@@ -79,6 +101,18 @@ public class UserService {
         return new LoginResponse(true, token, "Login successful");
     }
 
+    /**
+     * Edits user details based on provided new information. Ensures that the requesting user has the right to make changes.
+     *
+     * @param oldUsername the current username of the user to update.
+     * @param newUsername the new username, if changed.
+     * @param email new email, if changed.
+     * @param phoneNumber new phone number, if changed.
+     * @param role new role, if changed.
+     * @param jwtUsername the username from the JWT token.
+     * @param jwtRole the role from the JWT token.
+     * @return ApiResponse indicating the success or failure of the update.
+     */
     public ApiResponse<?> editUser(String oldUsername, String newUsername, String email, String phoneNumber, String role, String jwtUsername, String jwtRole) {
         //Find the user
         Optional<User> user = userRepository.findByUsername(oldUsername);
@@ -132,6 +166,12 @@ public class UserService {
         return new ApiResponse<String>(true, "Success", token);
     }
 
+    /**
+     * Validates password strength based on predefined rules.
+     *
+     * @param password the password to validate.
+     * @return true if the password meets the strength requirements, otherwise false.
+     */
     private boolean isPasswordStrong(String password) {
         if (password == null) {
             return false;
@@ -142,6 +182,12 @@ public class UserService {
         return password.matches(regex);
     }
 
+    /**
+     * Retrieves all users if the requester has administrative privileges.
+     *
+     * @param role the role of the requester.
+     * @return ApiResponse containing a list of all users or an error message.
+     */
     public ApiResponse<?> getAllUsers(String role) {
         if (!role.equals("ADMIN")) {
             return new ApiResponse<>(false, "Invalid role: "+role, role);
@@ -150,6 +196,44 @@ public class UserService {
         return new ApiResponse<>(true, "Success", users);
     }
 
+    /**
+     * Finds a user by their username.
+     *
+     * @param username the username to find.
+     * @return User object if found, null otherwise.
+     */
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    /**
+     * Deletes a user from the system based on username, verifying permissions from JWT claims.
+     *
+     * @param username the username of the user to delete.
+     * @param jwtUsername the username from the JWT token.
+     * @param jwtRole the role from the JWT token.
+     * @return ApiResponse indicating the result of the deletion attempt.
+     */
+    public ApiResponse<?> deleteUser(String username, String jwtUsername, String jwtRole) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            return new ApiResponse<>(false, "User "+ username +" not found", "User "+ username +" not found");
+        }
+        boolean allowedToUpdate = user.get().getUsername().equals(jwtUsername) || jwtRole.equals("ADMIN");
+        if (!allowedToUpdate){
+            return new ApiResponse<>(false, "Invalid Permissions in JWT token", "Invalid Permissions in JWT token");
+        }
+        boolean isDeletingSelf = user.get().getUsername().equals(jwtUsername);
+        try {
+            userRepository.delete(user.get());
+            if (isDeletingSelf) {
+                return new ApiResponse<>(true, "Success", true);
+            }
+            return new ApiResponse<>(true, "Success", false);
+        } catch (Exception e) {
+            return new ApiResponse<>(false, "Failed to delete user", "Failed to delete user");
+        }
+    }
 
     // TODO: validate email
     private boolean isEmailValid(String email) {
@@ -172,30 +256,5 @@ public class UserService {
             return Pair.of(false, "Username too short");
         }
         return Pair.of(true, "Success");
-    }
-
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
-    }
-
-    public ApiResponse<?> deleteUser(String username, String jwtUsername, String jwtRole) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
-            return new ApiResponse<>(false, "User "+ username +" not found", "User "+ username +" not found");
-        }
-        boolean allowedToUpdate = user.get().getUsername().equals(jwtUsername) || jwtRole.equals("ADMIN");
-        if (!allowedToUpdate){
-            return new ApiResponse<>(false, "Invalid Permissions in JWT token", "Invalid Permissions in JWT token");
-        }
-        boolean isDeletingSelf = user.get().getUsername().equals(jwtUsername);
-        try {
-            userRepository.delete(user.get());
-            if (isDeletingSelf) {
-                return new ApiResponse<>(true, "Success", true);
-            }
-            return new ApiResponse<>(true, "Success", false);
-        } catch (Exception e) {
-            return new ApiResponse<>(false, "Failed to delete user", "Failed to delete user");
-        }
     }
 }

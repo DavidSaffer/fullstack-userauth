@@ -5,9 +5,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Configuration class for web MVC settings.
+ * This class is used to configure CORS (Cross-Origin Resource Sharing) settings to control how resources
+ * in the web application can be requested from another domain.
+ * This setup is crucial for a multi-origin environment where the backend and frontend run on different servers or ports.
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    /**
+     * Configures CORS mapping for the application.
+     * This method sets up CORS rules that apply to API paths to ensure the frontend can interact with the backend securely.
+     *
+     * @param registry the CORS registry to which the CORS rules are added.
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // Apply CORS settings to all API paths

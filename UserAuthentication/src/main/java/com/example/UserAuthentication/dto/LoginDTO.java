@@ -2,6 +2,15 @@ package com.example.UserAuthentication.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Data Transfer Object for user login requests.
+ * This class is used to capture and transfer user credentials for authentication purposes.
+ *
+ * Fields:
+ * - {@code username}: The username of the user attempting to log in. Cannot be blank.
+ * - {@code password}: The password of the user. Cannot be blank.
+ *
+ */
 public class LoginDTO {
     @NotBlank(message = "Username is mandatory")
     private String username;

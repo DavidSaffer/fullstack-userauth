@@ -15,6 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Handles requests related to users, including retrieving, updating, and listing users.
+ * Utilizes JWT for authentication to ensure that endpoints are accessed by authorized users only.
+ */
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -30,6 +34,11 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Extracts JWT token from cookie array within an HTTP request.
+     * @param request HttpServletRequest containing cookies.
+     * @return JWT token if present, null otherwise.
+     */
     private String extractJwtFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -42,6 +51,12 @@ public class UserController {
         return null;
     }
 
+    /**
+     * Creates a new Cookie with specified name and value, configured for HTTP-only, secure transmission.
+     * @param name Name of the cookie.
+     * @param value Value of the cookie.
+     * @return A new HttpOnly, secure Cookie object.
+     */
     private Cookie createCookie(String name, String value) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
@@ -51,6 +66,11 @@ public class UserController {
         return cookie;
     }
 
+    /**
+     * Retrieves user information based on the provided JWT token.
+     * @param token JWT token used for identifying the user - Retrieved from http cookie
+     * @return ResponseEntity containing the user information or an error message.
+     */
     @GetMapping("/get-user-info")
     public ResponseEntity<?> getUserInfo(@CookieValue("jwt") String token) {
         try {
@@ -76,6 +96,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Updates user details based on the provided EditUserDTO and authorization token.
+     * @param editUserDTO Data transfer object containing user information to be updated.
+     * @param request HttpServletRequest for extracting JWT token.
+     * @param response HttpServletResponse for setting new JWT token if necessary.
+     * @return ResponseEntity indicating success or failure of the update operation.
+     */
     @PostMapping("/update-user")
     public ResponseEntity<?> updateUser(@RequestBody EditUserDTO editUserDTO,HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -104,6 +131,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves a list of all users if the requester is authorized as an admin.
+     * @param request HttpServletRequest to extract JWT token and verify admin role.
+     * @return ResponseEntity containing the list of users or an error message.
+     */
     @GetMapping("/users")
     public ResponseEntity<?> getUsers(HttpServletRequest request) {
         try {
@@ -124,6 +156,5 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error fetching users", null));
         }
     }
-
 
 }
