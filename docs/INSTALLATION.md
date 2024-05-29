@@ -21,7 +21,7 @@ Navigate to the backend directory and follow the installation guide provided the
 
 Navigate to the frontend directory and follow the installation guide provided there to set up and run the Next.js frontend:
 
-[Frontend Installation Guide](/../frontend/docs/INSTALLATION.md)
+[Frontend Installation Guide](../frontend/docs/INSTALLATION.md)
 
 ## Step 4: Running the Full Stack Application
 
