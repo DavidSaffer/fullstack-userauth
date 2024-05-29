@@ -17,7 +17,6 @@ const AuthPage: React.FC = () => {
     <>
     <h1>Authentication</h1>
     <div className={styles.container}>
-      
       <LoginForm />
       <SignupForm />
     </div>
