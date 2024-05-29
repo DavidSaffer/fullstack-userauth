@@ -42,7 +42,7 @@ The `users` table stores information about the users registered in the system. H
 - **Role-based Authorization**: Different access levels for admin and regular users.
 - **User Management**: Admin portal for managing users and roles.
 - **Responsive Design**: UI built with Next.js.
-- **RESTful APIs**: Well-documented APIs for user management and authentication.
+- **REST APIs**: Well-documented APIs for user management and authentication.
 - **Secure Password Storage**: Passwords are hashed and stored securely using BCrypt.
 
 ## API Documenation
