@@ -16,6 +16,19 @@ const AdminPortal = () => {
 
     const router = useRouter();
 
+    const [filter, setFilter] = useState('');
+    const [sortField, setSortField] = useState('userId');
+    const [sortDirection, setSortDirection] = useState('asc'); // 'asc' or 'desc'
+
+    const filteredUsers = users
+        .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
+        .sort((a, b) => {
+            if (a[sortField] < b[sortField]) return sortDirection === 'asc' ? -1 : 1;
+            if (a[sortField] > b[sortField]) return sortDirection === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+
     useEffect(() => {
         const fetchUsers = async () => {
             setLoading(true);
@@ -151,6 +164,24 @@ const AdminPortal = () => {
                 <p>Loading users...</p>
             ) : (
                 <>
+                <div className={styles.filters}>
+                    <input
+                        type="text"
+                        placeholder="Filter by username..."
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                    />
+                    <select value={sortField} onChange={(e) => setSortField(e.target.value)}>
+                        <option value="userId">User ID</option>
+                        <option value="username">Username</option>
+                        <option value="email">Email</option>
+                        <option value="role">Role</option>
+                        <option value="phoneNumber">Phone Number</option>
+                    </select>
+                    <button onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}>
+                        {sortDirection === 'asc' ? 'Sort Ascending' : 'Sort Descending'}
+                    </button>
+                    </div>
                 {successMessage && <p className={styles.success}>{successMessage}</p>}
                 {errorMessage && <p className={styles.error}>{errorMessage}</p>}
                 <table className={styles.table}>
@@ -168,7 +199,7 @@ const AdminPortal = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
+                        {filteredUsers.map(user => (
                             <tr key={user.userId}>
                                 <td>{user.userId}</td>
                                 <td>{user.isEditing ? (
