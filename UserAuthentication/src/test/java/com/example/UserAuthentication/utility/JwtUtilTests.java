@@ -27,6 +27,7 @@ public class JwtUtilTests {
     public void setup() {
         // Initialize JwtUtil with a fixed secret key for testing.
         jwtUtil = new JwtUtil();
+        jwtUtil.init();
     }
 
     @Test
@@ -51,7 +52,6 @@ public class JwtUtilTests {
     @Test
     public void testIsTokenExpired() {
         String token = jwtUtil.generateToken("testUser", "USER");
-
         // Immediately check if the token is expired
         assertFalse(jwtUtil.isTokenExpired(token), "Token should not be expired right after creation");
 

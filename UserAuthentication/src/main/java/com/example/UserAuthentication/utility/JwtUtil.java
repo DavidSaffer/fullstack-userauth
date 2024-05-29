@@ -29,6 +29,9 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
+        if (expirationTimeHours < 1){
+            expirationTimeHours = 24;
+        }
         expirationTime = 3600000 * expirationTimeHours;  // Initialize after properties are loaded
     }
     /**

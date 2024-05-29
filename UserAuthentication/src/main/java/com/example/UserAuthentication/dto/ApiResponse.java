@@ -1,5 +1,8 @@
 package com.example.UserAuthentication.dto;
 
+import lombok.ToString;
+
+@ToString
 public class ApiResponse<T> {
     private boolean success;
     private String message;
