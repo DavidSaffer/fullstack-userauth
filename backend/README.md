@@ -11,10 +11,10 @@ The User Authentication System is a Spring Boot application that provides secure
 - API endpoints for managing users and roles
 
 ## Architecture
-![Architecture Diagram](architecture.png)
+![Architecture Diagram](./docs/architecture.png)
 
 ## Getting Started
-Follow the [Installation Guide](INSTALLATION.md) to set up the project locally.
+Follow the [Installation Guide](./docs/INSTALLATION.md) to set up the project locally.
 
 ## API Documentation
-Detailed API documentation is available in the [API Guide](API.md).
+Detailed API documentation is available in the [API Guide](./docs/API.md).

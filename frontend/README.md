@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Frontend for User Authentication System
+
+## Overview
+
+This frontend part of the Full Stack User Authentication System is built using Next.js. It provides a user-friendly interface for authentication and user management, interacting with a Spring Boot backend via REST APIs.
+
+## Features
+
+- **User Login and Registration**: Interfaces for users to register and log into the system.
+- **Admin Interface**: Allows administrators to manage user roles and details.
+- **Responsive Design**: Ensures the application is usable on both desktop and mobile devices.
+
+## Tech Stack
+
+- **Next.js**: A React framework for building user interfaces.
+- **Axios**: Promise-based HTTP client for making API calls.
+
+## Project Structure
+
+- `app/`: Contains all the React components and pages.
+  - `admin/`: Admin specific components.
+  - `auth/`: Authentication related components.
+- `interfaces/`: TypeScript interfaces used across the frontend application.
+- `services/`: Services folder containing API calls setup.
+- `public/`: Public assets like images and fonts.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Docker and Docker Compose: The application is containerized, which simplifies deployment and development workflows.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Running the Application
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the Repository**:
+   If you haven't already, clone the main project repository to your local machine:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+   git clone https://github.com/DavidSaffer/fullstack-userauth.git
+   cd fullstack-userauth/frontend
+   ```
 
-## Learn More
+2. **Build and Run with Docker**:
+   From the root of the project, use Docker Compose to build and start the frontend service:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   docker-compose up --build frontend
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   This command will build the Next.js application as a Docker container and run it. The service is defined in the root `docker-compose.yml`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. **Access the Application**:
+   Once the application is running, you can access it at [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+For local development, follow these steps:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. **Install Dependencies**:
+   Navigate to the `frontend` directory and install the necessary packages:
+
+   ```bash
+   npm install
+   ```
+
+2. **Run the Development Server**:
+   Start the Next.js development server:
+
+   ```bash
+   npm run dev
+   ```
+
+   This will serve the application at [http://localhost:3000](http://localhost:3000).
+
+## Troubleshooting
+
+If you encounter any problems with running the frontend, please check the following:
+
+- Ensure Docker is running properly.
+- Check the Docker logs for any error messages.
+- Ensure that the backend service is running, as the frontend requires it for full functionality.
