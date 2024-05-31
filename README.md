@@ -59,7 +59,7 @@ The `users` table stores information about the users registered in the system. H
 
 **Backend**:
 - Spring Boot (Java)
-- Spring Security (for authentication and authorization)
+- Spring Security (pasword encryption)
 - MySQL (Database)
 - JPA/Hibernate (for ORM)
 
