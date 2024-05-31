@@ -66,6 +66,8 @@ The `users` table stores information about the users registered in the system. H
 **Other**:
 - JWT (for secure token-based authentication)
 - Maven (for dependency management)
+- Docker
+- Docker Compose
 
 ## Authentication Mechanism
 
