@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * Utilizes JWT for authentication to ensure that endpoints are accessed by authorized users only.
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
@@ -61,7 +62,7 @@ public class UserController {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setMaxAge(jwtExpirationInHours * 3600); // Convert hours to seconds
         return cookie;
     }

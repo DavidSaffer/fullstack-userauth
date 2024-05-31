@@ -17,14 +17,17 @@ export async function middleware(request: NextRequest) {
 
   const jwt = request.cookies.get('jwt');
   if (!jwt) {
+      console.log("no JWT");
       return NextResponse.redirect(new URL('/auth', request.url));
   }
   try {
     const data = await validateToken(jwt.value);
     if (!data.success) {
+      console.log("no valid JWT");
       return NextResponse.redirect(new URL('/auth', request.url));
     }
   } catch (error) {
+      console.log("error valid JWT");
       return NextResponse.redirect(new URL('/auth', request.url));
   }
 

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
+//import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Controller that handles authentication processes such as signup, login, logout, token validation, and user deletion.
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -51,7 +52,7 @@ public class AuthController {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setMaxAge(jwtExpirationInHours * 3600); // Convert hours to seconds
         return cookie;
     }
@@ -150,6 +151,7 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(false, "Token is invalid", null));
             }
         } catch (Exception e) {
+            logger.error("Error validating token: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error validating token", null));
         }
     }
@@ -171,6 +173,7 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse<>(false, "Access denied. User is not an admin.", role));
             }
         } catch (Exception e) {
+            logger.error("Error checking token claims: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error validating user role: " + e.getMessage(), token));
         }
     }
@@ -221,6 +224,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, result.getMessage(), result.getData()));
 
         } catch (Exception e){
+            logger.error("Error Deleting User: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, "Error deleting user", e.getMessage()));
         }
     }

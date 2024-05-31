@@ -1,33 +1,40 @@
-FROM ubuntu:latest
-LABEL authors="davidsaffer"
-
-ENTRYPOINT ["top", "-b"]
-
-# Use the official Amazon Corretto 17 image as the base image for building the application
+# Use Amazon Corretto JDK to build and run the Spring Boot application
 FROM amazoncorretto:17 as build
 
-# Set the working directory inside the container
+# Add Maintainer Info
+LABEL maintainer="davidsaffer"
+
+# Set the working directory in the Docker image
 WORKDIR /app
 
-# Copy the Maven wrapper and pom.xml to the container
-COPY mvnw .
+# Copy maven executable and POM file to the image
+COPY mvnw pom.xml ./
 COPY .mvn .mvn
-COPY pom.xml .
+
+# First download dependencies so they can be cached.
+RUN ./mvnw dependency:go-offline -B
 
 # Copy the project source
-COPY src src
+COPY src ./src
 
-# Build the application
-RUN ./mvnw install -DskipTests
+# Build the application without running tests
+RUN ./mvnw package -DskipTests
 
-# Use Amazon Corretto 17 for the runtime image
+# For the final image, use Amazon Corretto Runtime to reduce the image size
 FROM amazoncorretto:17
 
-# Copy the jar from the build stage
-COPY --from=build /app/target/*.jar app.jar
+# Add Maintainer Info
+LABEL maintainer="davidsaffer"
 
-# Expose the port the app runs on
+# Add a volume pointing to "/tmp" - This is useful for Tomcat by default
+VOLUME /tmp
+
+# Expose the port the application runs on
 EXPOSE 8080
 
+# Set the working directory and copy over the built artifact from the previous stage
+WORKDIR /app
+COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar ./app.jar
+
 # Command to run the application
-CMD ["java", "-jar", "/app.jar"]
+CMD ["java", "-jar", "app.jar"]

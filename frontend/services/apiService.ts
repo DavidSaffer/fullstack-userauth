@@ -2,10 +2,12 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api';
+const INTERNAL_API_URL = 'http://host.docker.internal:8080/api';
 
 export const loginUser = async (username: string, password: string) => {
     try {
         const response = await axios.post(`${API_URL}/auth/login`, { username, password }, { withCredentials: true });
+        console.log(response);
         return response.data;  // Assuming the token and user details are in the response
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -29,9 +31,11 @@ export const signupUser = async (username: string, password: string, email: stri
 
 export const validateToken = async(token: string) => {
     try {
-        const response = await axios.post(`${API_URL}/auth/validate-token`, token, { withCredentials: true });
+        const response = await axios.post(`${INTERNAL_API_URL}/auth/validate-token`, token, { withCredentials: true });
         return response.data
     } catch (error: any) {
+        console.log(error.response?.data);
+        console.log("VALIDATING TOKEN =================");
         if (axios.isAxiosError(error) && error.response) {
             throw new Error(error.response.data.message || 'Failed to signup');
         }
@@ -41,7 +45,7 @@ export const validateToken = async(token: string) => {
 
 export const checkIsAdmin = async(token: string) => {
     try {
-        const response = await axios.post(`${API_URL}/auth/is-admin`, token, {withCredentials: true});
+        const response = await axios.post(`${INTERNAL_API_URL}/auth/is-admin`, token, {withCredentials: true});
         return {success: true, data: response.data};
     } catch (error: any) {
         if (axios.isAxiosError(error) && error.response) {

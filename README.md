@@ -3,6 +3,9 @@
 ## Overview
 This project is a full-stack application consisting of a Spring Boot backend and a Next.js frontend. The backend provides REST APIs for user authentication and authorization, while the frontend offers a user-friendly interface for interacting with these services.
 
+## Installation
+Follow the [Installation Guide](/docs/INSTALLATION.md).
+
 ## Project Structure
 - `backend/`: Contains the Spring Boot application.
 - `frontend/`: Contains the Next.js application.
@@ -100,14 +103,14 @@ The Full Stack User Authentication System uses JSON Web Tokens (JWT) and cookies
 - **Token Expiration**: JWT tokens have an expiration time, after which they become invalid. This limits the risk if a token is compromised.
 - **Role-based Access Control**: The system uses roles encoded in the JWT token to enforce authorization checks, ensuring that users can only access resources for which they have permissions.
 
-## Getting Started
+<!-- ## Getting Started
 ### Prerequisites
 - **Node.js**: Required for running the Next.js frontend.
 - **Java Development Kit (JDK)**: Required for running the Spring Boot backend.
 - **Maven**: For building the Spring Boot application.
 - **MySQL**: The database used by the backend.
 
-### Follow the [Installation Guide](/docs/INSTALLATION.md)
+### Follow the [Installation Guide](/docs/INSTALLATION.md) -->
 
 ## Screenshots
 ### Auth Page

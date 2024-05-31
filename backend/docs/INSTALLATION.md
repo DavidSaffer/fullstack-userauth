@@ -99,4 +99,3 @@ If you encounter any issues during installation or setup, consider the following
 ## Conclusion
 
 By following these steps, you should have the User Authentication System up and running locally. This setup provides a robust foundation for developing and testing the application in different environments.
-

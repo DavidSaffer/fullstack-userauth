@@ -1,16 +1,22 @@
 package com.example.UserAuthentication.config;
 
-import com.example.UserAuthentication.utility.JwtRequestFilter;
+//import com.example.UserAuthentication.utility.JwtRequestFilter;
 import com.example.UserAuthentication.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  * Security configuration class using Spring Security to enforce security measures across the application.
@@ -36,15 +42,15 @@ public class SecurityConfig {
         this.jwtUtil = jwtUtil;
     }
 
-    @Bean
-    public JwtRequestFilter jwtRequestFilter() {
-        return new JwtRequestFilter(jwtUtil);
-    }
+//    @Bean
+//    public JwtRequestFilter jwtRequestFilter() {
+//        return new JwtRequestFilter(jwtUtil);
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())  // Make sure CSRF is indeed disabled
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/index.html", "/index", "/app.js", "/css/**", "/images/**").permitAll() // Allow all these paths.
@@ -56,6 +62,28 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true); // Allows credentials, adjust as necessary
+        config.addAllowedOriginPattern("*"); // Adjust this to match your specific domain, '*' is not safe for production
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+
 
     /**
      * Password encoder bean to hash and verify passwords in the application.
